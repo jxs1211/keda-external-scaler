@@ -6,4 +6,5 @@ var dlog = debug.NewLogger()
 
 func RunDebugLog() {
 	dlog.Printf("my dlog output is %s", "awsome")
+	dlog.Println("my dlog output is awsome")
 }

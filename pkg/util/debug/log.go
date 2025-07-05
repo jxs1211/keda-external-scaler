@@ -7,29 +7,7 @@ import (
 	"strings"
 )
 
-func Printf(format string, args ...interface{}) {
-	_, file, line, _ := runtime.Caller(1)
-	// fn := runtime.FuncForPC(pc)
-	parts := strings.Split(file, "/")
-
-	var pkg string
-	if len(parts) >= 2 {
-		pkg = parts[len(parts)-2]
-	} else {
-		pkg = "main"
-	}
-
-	buf := make([]byte, 1024)
-	runtime.Stack(buf, false)
-	stack := strings.TrimSpace(string(buf))
-
-	log.Printf("[%s:%d][%s] %s\nCall stack:\n%s",
-		file, line,
-		pkg,
-		fmt.Sprintf(format, args...),
-		stack,
-	)
-}
+const symbol = "✦✦✦DEBUG✦✦✦"
 
 type Logger struct {
 	includeCallStack         bool
@@ -62,11 +40,11 @@ func (l *Logger) Printf(format string, args ...interface{}) {
 	if len(parts) >= 2 {
 		pkg = parts[len(parts)-2]
 	}
-	var entry string
+	entry := symbol
 	if l.includeFormatPackageName {
-		entry = fmt.Sprintf("[%s:%d][%s] %s", file, line, pkg, fmt.Sprintf(format, args...))
+		entry += fmt.Sprintf("[%s:%d][%s] %s", file, line, pkg, fmt.Sprintf(format, args...))
 	} else {
-		entry = fmt.Sprintf("[%s:%d] %s", file, line, fmt.Sprintf(format, args...))
+		entry += fmt.Sprintf("[%s:%d] %s", file, line, fmt.Sprintf(format, args...))
 	}
 
 	if l.includeCallStack {
@@ -86,11 +64,11 @@ func (l *Logger) Println(args ...interface{}) {
 	if len(parts) >= 2 {
 		pkg = parts[len(parts)-2]
 	}
-	var entry string
+	entry := symbol
 	if l.includeFormatPackageName {
-		entry = fmt.Sprintf("[%s:%d][%s] %s", file, line, pkg, fmt.Sprint(args...))
+		entry += fmt.Sprintf("[%s:%d][%s] %s", file, line, pkg, fmt.Sprint(args...))
 	} else {
-		entry = fmt.Sprintf("[%s:%d] %s", file, line, fmt.Sprint(args...))
+		entry += fmt.Sprintf("[%s:%d] %s", file, line, fmt.Sprint(args...))
 	}
 
 	if l.includeCallStack {
